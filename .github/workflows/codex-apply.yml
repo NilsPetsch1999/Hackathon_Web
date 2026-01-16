@@ -1,0 +1,51 @@
+name: Codex Apply (Issue -> PR)
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  apply:
+    if: github.event.label.name == 'codex:go'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Write issue to SPEC.md
+        run: |
+          cat > SPEC.md << 'EOF'
+          # Issue: ${{ github.event.issue.title }}
+          URL: ${{ github.event.issue.html_url }}
+
+          ## Body
+          ${{ github.event.issue.body }}
+          EOF
+
+      - name: Run Codex (make edits)
+        id: run_codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/codex/prompts/issue_apply.md
+          output-file: codex-apply.md
+          safety-strategy: drop-sudo
+          sandbox: workspace-write
+          codex-args: '["--full-auto"]'
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "Codex: ${{ github.event.issue.title }}"
+          body: |
+            Implements: #${{ github.event.issue.number }}
+
+            Codex output:
+            - See `codex-apply.md` in this branch for details.
+          branch: codex/issue-${{ github.event.issue.number }}
+          commit-message: "Codex: implement #${{ github.event.issue.number }}"
