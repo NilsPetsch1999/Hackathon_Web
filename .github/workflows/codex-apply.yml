@@ -50,6 +50,10 @@ jobs:
           safety-strategy: drop-sudo
           sandbox: workspace-write
           codex-args: '["--full-auto"]'
+        
+      - name: App sanity check (no syntax errors)
+        run: |
+          git diff --check
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
