@@ -17,6 +17,11 @@ export const CommentSection: React.FC = () => {
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
 
+  const getInitials = (fullName: string) => {
+    const [first, second] = fullName.trim().split(' ');
+    return `${first?.[0] ?? ''}${second?.[0] ?? ''}`.toUpperCase();
+  };
+
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };
@@ -40,53 +45,73 @@ export const CommentSection: React.FC = () => {
 
   return (
     <section className="comments">
-      <button className="show-hide" onClick={toggleVisibility}>
-        {isVisible ? 'Hide comments' : 'Show comments'}
-      </button>
+      <div className="comments__toggle">
+        <button
+          className="show-hide"
+          onClick={toggleVisibility}
+          aria-expanded={isVisible}
+          aria-controls="comment-panel"
+          type="button"
+        >
+          {isVisible ? 'Hide comments' : 'Show comments'}
+        </button>
+      </div>
 
       {isVisible && (
-        <div className="comment-wrapper">
-          <h2>Add comment</h2>
-          <form className="comment-form" onSubmit={handleSubmit}>
-            <div className="flex-pair">
-              <label htmlFor="name">Your name:</label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                placeholder="Enter your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="flex-pair">
-              <label htmlFor="comment">Your comment:</label>
-              <input
-                type="text"
-                name="comment"
-                id="comment"
-                placeholder="Enter your comment"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
-            </div>
-            <div>
-              <input type="submit" value="Submit comment" />
-            </div>
-          </form>
+        <div className="comment-wrapper" id="comment-panel">
+          <div className="comment-card comment-card--form">
+            <h2>Add comment</h2>
+            <form className="comment-form" onSubmit={handleSubmit}>
+              <div className="flex-pair">
+                <label htmlFor="name">Your name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Enter your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div className="flex-pair">
+                <label htmlFor="comment">Your comment:</label>
+                <input
+                  type="text"
+                  name="comment"
+                  id="comment"
+                  placeholder="Enter your comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+              </div>
+              <div className="comment-actions">
+                <input
+                  type="submit"
+                  value="Submit comment"
+                  className="comment-submit"
+                />
+              </div>
+            </form>
+          </div>
 
-          <h2>Comments</h2>
-          <ul className="comment-container">
-            {comments.map((comment, index) => (
-              <li key={index}>
-                <p>{comment.name}</p>
-                <p>{comment.text}</p>
-              </li>
-            ))}
-          </ul>
+          <div className="comment-card comment-card--list">
+            <h2>Comments</h2>
+            <ul className="comment-container">
+              {comments.map((comment, index) => (
+                <li key={index} className="comment-item">
+                  <div className="comment-avatar" aria-hidden="true">
+                    {getInitials(comment.name)}
+                  </div>
+                  <div className="comment-body">
+                    <p className="comment-name">{comment.name}</p>
+                    <p className="comment-text">{comment.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </section>
   );
 };
-
