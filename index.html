@@ -3,9 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Counter Button</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f2;
+            font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+        }
+
+        #counter-button {
+            min-width: 120px;
+            min-height: 64px;
+            font-size: 2rem;
+            font-weight: 600;
+            border-radius: 12px;
+            border: 2px solid #2f2f2f;
+            background: #fffdf7;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <p>This is a normal Paragraph.</p>
+    <button id="counter-button" type="button">0</button>
+    <script type="module" src="./counter.mjs"></script>
 </body>
 </html>
